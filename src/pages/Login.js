@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -10,9 +10,24 @@ import {
   StyleSheet
 } from "react-native";
 
+import api from "../services/api";
+
 import logo from "../assets/logo.png";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [techs, setTechs] = useState("");
+
+  async function handleSubmit() {
+    const response = await api.post("/sessions", {
+      email
+    });
+
+    const { _id } = response.data;
+
+    console.log(_id);
+  }
+
   return (
     <KeyboardAvoidingView
       //enabled={Platform.OS === "ios"}
@@ -30,6 +45,8 @@ export default function Login() {
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
+          value={email}
+          onChangeText={setEmail}
         />
 
         <Text style={styles.label}>TECNOLOGIAS</Text>
@@ -39,8 +56,10 @@ export default function Login() {
           placeholderTextColor="#999"
           autoCapitalize="words"
           autoCorrect={false}
+          value={techs}
+          onChangeText={setTechs}
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
           <Text style={styles.buttonText}>Encontrar Spots</Text>
         </TouchableOpacity>
       </View>
